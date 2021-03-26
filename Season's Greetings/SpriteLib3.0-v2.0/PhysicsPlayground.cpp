@@ -473,18 +473,23 @@ void PhysicsPlayground::Update()
 		}
 	}
 
-	for (int i = 0; i < 4; i++) {
-		if (ECS::GetComponent<Door>(doors[i]).activated) {
-			ECS::GetComponent<Door>(doors[i]).activated = false;
-			dungeon->position[0] += ECS::GetComponent<Door>(doors[i]).yOffSet;
-			dungeon->position[1] += ECS::GetComponent<Door>(doors[i]).xOffSet;
+	if (stateOfGame == PLAY) {
+		for (int i = 0; i < 4; i++) {
+			if (ECS::GetComponent<Door>(doors[i]).activated) {
+				ECS::GetComponent<Door>(doors[i]).activated = false;
+				dungeon->position[0] += ECS::GetComponent<Door>(doors[i]).yOffSet;
+				dungeon->position[1] += ECS::GetComponent<Door>(doors[i]).xOffSet;
+
+				std::cout << "switch tyme!";
 			
-			dungeon->currentRoom = dungeon->map[dungeon->position[0]][dungeon->position[1]];
-			dungeon->currentRoom--;
-			std::cout << dungeon->currentRoom;
-			newRoom(dungeon->currentRoom, i);
+				dungeon->currentRoom = dungeon->map[dungeon->position[0]][dungeon->position[1]];
+				dungeon->currentRoom--;
+				std::cout << dungeon->currentRoom;
+				newRoom(dungeon->currentRoom, i);
+			}
 		}
 	}
+	
 
 
 
