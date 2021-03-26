@@ -54,6 +54,7 @@ protected:
 	enum gameState {
 		STARTSCREEN,
 		MENU,
+		TRANSITION,
 		PLAY,
 		END
 	};
