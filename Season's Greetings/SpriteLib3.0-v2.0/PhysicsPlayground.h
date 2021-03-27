@@ -55,11 +55,15 @@ protected:
 		STARTSCREEN,
 		MENU,
 		TRANSITION,
+		TSCREEN,
 		PLAY,
 		END
 	};
 
 	int stateOfGame = STARTSCREEN;
+
+	int tSi = 0;
+	std::vector<std::string>tutorialMess{ "t1.png", "t2.png", "t3.png", "t4.png", "t5.png", "t6.png", "t7.png", "t8.png" };
 
 
 	PhysicsPlaygroundListener listener;
