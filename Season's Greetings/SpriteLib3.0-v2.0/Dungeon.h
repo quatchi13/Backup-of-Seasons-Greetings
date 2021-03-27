@@ -1,8 +1,9 @@
 #pragma once
 #include <vector>
+#include <fstream>
 class Dungeon {
 public:
-	int map[6][6];
+	int map[6][6]{ {0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0} };
 	int position[2];
 	int startPos[2];
 	int nOfRooms;
@@ -33,17 +34,28 @@ private:
 	std::vector<int>currRoomEnemies;
 	int remainingEnemies;
 
+	int y, x;
+	
+
 	std::vector<std::vector<int>>dungeonPool;
 	std::vector<std::vector<int>>roomPool;
 	std::vector<int>indexes;
 
 	void generateIndexes();
-	void getDungeonPool();
 	void getRoomPool();
+
+	void generateMap();
+	void tripleDot();
+	void makeDot();
+	void connect3();
+	int countRooms();
+	void addDots(int);
+	void subtractDots(int);
+	bool isBesideSomething();
+	void formatMap();
 
 	void selectMap();
 	void getPosition(int);
-	void getNofRooms();
 	void selectRooms();
 
 	void addToDPool();

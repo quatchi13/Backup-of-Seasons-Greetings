@@ -195,110 +195,207 @@ void Dungeon::getRoomPool() {
 
 
 
-void Dungeon::getNofRooms() {
-	nOfRooms = 0;
+
+void Dungeon::selectRooms() {
+	getRoomPool();
+	drawRoomsFromPool();
+	setDoors();
+}
+
+
+
+
+
+
+
+void Dungeon::formatMap() {
+	int count = 1; 
 	for (int i = 0; i < 6; i++) {
 		for (int j = 0; j < 6; j++) {
-			if (map[i][j] > 0) {
-				nOfRooms++;
+			if (map[i][j]) {
+				map[i][j] = count;
+				count++;
 			}
 		}
 	}
 }
 
+void Dungeon::subtractDots(int remaining) {
+	y = 4;
+	x = 4;
+	while (remaining < 0) {
+		if (map[y][x] == 1) {
+			map[y][x] = 0;
+			remaining++;
 
-
-
-void Dungeon::selectRooms() {
-	getNofRooms();
-	getRoomPool();
-	drawRoomsFromPool();
-	setDoors();
+		}
+		x--;
+		if (x == 0) {
+			x = 4;
+			y--;
+		}
+	}
 }
-//stores selected map as map array
-void Dungeon::storeAsArray(std::vector<int> m) {
+
+bool Dungeon::isBesideSomething() {
+
+	if ((map[y - 1][x] == 1) || (map[y + 1][x] == 1)) {
+		return true;
+	}
+	else if ((map[y][x - 1] == 1) || (map[y][x + 1] == 1)) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+void Dungeon::addDots(int remaining) {
+	for (int i = 0; i < remaining; i++) {
+		bool successful = false;
+		while (!successful) {
+			makeDot();
+			if (isBesideSomething() && (!map[y][x])) {
+				map[y][x] = 1;
+				successful = true;
+			}
+		}
+	}
+}
+
+int Dungeon::countRooms() {
+	int count = 0;
 	for (int i = 0; i < 6; i++) {
+
 		for (int j = 0; j < 6; j++) {
-			map[i][j] = m[j + (i*6)];
+			if (map[i][j]) {
+				count++;
+			}
 		}
 	}
-	std::cout << "done";
+	return count;
 }
 
-//randomly selects one dungeon map to use as game map
-void Dungeon::drawMapFromPool() {
-	index = rand() % dungeonPool.size();
+void Dungeon::connect3() {
+	int locs[3][2];
+	int found = 0;
 
-	storeAsArray(dungeonPool[index]);
-}
+	int distY, distX;
 
-//converts line to vector and adds to dungeon pool
-void Dungeon::addToDPool() {
-	for (int i = 0; i < 37; i++) {
-		int j;
-		char x = readD[i];
-		switch (x) {
-		case('A'):
-			j = 10;
-			break;
-		case('B'):
-			j = 11;
-			break;
-		case('C'):
-			j = 12;
-			break;
-		default:
-			j = x- '0';
+	for (int i = 1; i < 5; i++) {
+		for (int j = 1; j < 5; j++) {
+			if (map[i][j]) {
+				locs[found][0] = i;
+				locs[found][1] = j;
+				found++;
+			}
 		}
-		
-		currentLine.push_back(j);
 	}
 
-	dungeonPool.push_back(currentLine);
-	std::cout << "dank";
-	currentLine.clear();
-}
+	y = locs[0][0];
+	x = locs[0][1];
 
-//reads dungeon layouts from file and stores in dungeon pool
-void Dungeon::getDungeonPool() {
-	std::string sourceFile;
-	if (level == 1) {
-		sourceFile = "./SGData/dungeonDatabase.txt";
-	}
-	else if (level == 2) {
-		sourceFile = "./SGData/dungeonDatabase2.txt";
-	}
-	else {
-		sourceFile = "./SGData/dungeonDatabase3.txt";
-	}
-	iStream.open(sourceFile);
-	if (iStream.is_open()) {
-		while (iStream.good()) {
-			iStream.getline(readD, 37);
-			addToDPool();
+	distY = (locs[1][0] - locs[0][0]);
+	distX = (locs[1][1] - locs[0][1]);
+
+	if (distX < 0) {
+		for (int i = 0; i > distX; i--) {
+			x -= 1;
+			map[y][x] = 1;
 		}
+	}
+	else if (distX > 0) {
+		for (int i = 0; i < distX; i++) {
+			x += 1;
+			map[y][x] = 1;
+		}
+	}
 
-		iStream.close();
+
+	if (distY > 1) {
+		for (int i = 0; i < distY; i++) {
+			y += 1;
+			map[y][x] = 1;
+		}
 	}
-	else {
-		std::cout << "Could not find " << sourceFile;
-		exit(1);
+
+	distY = (locs[2][0] - locs[1][0]);
+	distX = (locs[2][1] - locs[1][1]);
+
+	y = locs[1][0];
+	x = locs[1][1];
+
+
+
+	if (distX < 0) {
+		for (int i = 0; i > distX; i--) {
+			x -= 1;
+			map[y][x] = 1;
+		}
 	}
+	else if (distX > 0) {
+		for (int i = 0; i < distX; i++) {
+			x += 1;
+			map[y][x] = 1;
+		}
+	}
+
+
+	if (distY > 1) {
+		for (int i = 0; i < distY; i++) {
+			y += 1;
+			map[y][x] = 1;
+		}
+	}
+
+	
+}
+	
+
+void Dungeon::makeDot() {
+	y = (1 + (rand() % 4));
+	x = (1 + (rand() % 4));
 }
 
-//defines map array
-void Dungeon::selectMap() {
-	getDungeonPool();
-	drawMapFromPool();
+void Dungeon::tripleDot() {
+	for(int i = 0; i < 3; i++) {
+		bool success = false;
+		while (!success) {
+			makeDot();
+			if (!map[y][x]) {
+				map[y][x] = 1;
+				success = true;
+			}
+
+		}
+	}
+	
+}
+
+void Dungeon::generateMap() {
+	tripleDot();
+	connect3();
+	int remaining = nOfRooms - (countRooms());
+
+	if (remaining > 0) {
+		addDots(remaining);
+	}
+	else if(remaining < 0){
+		subtractDots(remaining);
+	}
+
+	formatMap();
+
 }
 
 
 Dungeon::Dungeon(int l)
 {
 	level = l;
+	nOfRooms = (7 + ((l - 1) * 2) + rand() % 2);
 	srand(time(0));
 	isTutorial = false;
-	selectMap();
+	generateMap();
 	selectRooms();
 	getPosition(5);
 	populateDungeon();
@@ -381,6 +478,15 @@ void Dungeon::populateTutorial() {
 	}
 }
 
+//stores tutorial map as map array
+void Dungeon::storeAsArray(std::vector<int> m) {
+	for (int i = 0; i < 6; i++) {
+		for (int j = 0; j < 6; j++) {
+			map[i][j] = m[j + (i*6)];
+		}
+	}
+	std::cout << "done";
+}
 
 //this function deletes every data value that does not get overwritten by the constructors
 void Dungeon::WipeDungeon() {
