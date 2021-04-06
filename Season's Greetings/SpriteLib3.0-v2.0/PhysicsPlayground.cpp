@@ -128,7 +128,7 @@ void PhysicsPlayground::InitScene(float windowWidth, float windowHeight)
 	
 	makeCamFocus();
 
-	makeImage("StartScreen.png", 195, 130, 1, 0, -495, 30);
+	makeImage("Start.png", 195, 130, 1, 0, -495, 30);
 	makeImage("Health10.png", 25, 25, 1, 105, 60, 40);
 	makeImage("ground.png", 200, 200, 1, 0, 15, 1);
 
@@ -657,6 +657,19 @@ void PhysicsPlayground::KeyboardDown()
 			ECS::GetComponent<Sprite>(screen).LoadSprite(fName, 195, 130);
 			stateOfGame = MENU;
 		}
+		if (Input::GetKeyDown(Key::Shift))
+		{
+			std::string fName = "instructions.png";
+			ECS::GetComponent<Sprite>(screen).LoadSprite(fName, 195, 130);
+			stateOfGame = MENU;
+		}
+		if (Input::GetKeyDown(Key::RightArrow))
+		{
+			std::string fName = "Credit.png";
+			ECS::GetComponent<Sprite>(screen).LoadSprite(fName, 195, 130);
+			stateOfGame = MENU;
+		}
+
 	}
 	else if (stateOfGame == TRANSITION) {
 		if (Input::GetKeyDown(Key::Enter))
@@ -689,22 +702,30 @@ void PhysicsPlayground::KeyboardDown()
 		}
 	}
 	else {
-		if (Input::GetKeyDown(Key::A)) {
-			dungeon = &tutorial;
-			newRoom(dungeon->currentRoom, 4);
-			ECS::GetComponent<Sprite>(screen).LoadSprite(tutorialMess[tSi], 195, 130);
-			stateOfGame = TSCREEN;
-			PlaySound(TEXT("Game Music.wav"), NULL, SND_LOOP | SND_ASYNC);
+		if (ECS::GetComponent<Sprite>(screen).GetFileName() != "BigMenu.png") {
+			if (Input::GetKeyDown(Key::LeftArrow)) {
+				std::string fName = "Start.png";
+				ECS::GetComponent<Sprite>(screen).LoadSprite(fName, 195, 130);
+				stateOfGame = STARTSCREEN;
+			}
 		}
-		
-		if (Input::GetKeyDown(Key::D)) {
-			dungeon = &level1;
-			ECS::GetComponent<PhysicsBody>(MainEntities::CameraFocus()).SetPosition(b2Vec2(0, 15));
-			newRoom(dungeon->currentRoom, 4);
-			stateOfGame = PLAY;
-			PlaySound(TEXT("Game Music.wav"), NULL, SND_LOOP | SND_ASYNC);
+		else {
+			if (Input::GetKeyDown(Key::A)) {
+				dungeon = &tutorial;
+				newRoom(dungeon->currentRoom, 4);
+				ECS::GetComponent<Sprite>(screen).LoadSprite(tutorialMess[tSi], 195, 130);
+				stateOfGame = TSCREEN;
+				PlaySound(TEXT("Game Music.wav"), NULL, SND_LOOP | SND_ASYNC);
+			}
+
+			if (Input::GetKeyDown(Key::D)) {
+				dungeon = &level1;
+				ECS::GetComponent<PhysicsBody>(MainEntities::CameraFocus()).SetPosition(b2Vec2(0, 15));
+				newRoom(dungeon->currentRoom, 4);
+				stateOfGame = PLAY;
+				PlaySound(TEXT("Game Music.wav"), NULL, SND_LOOP | SND_ASYNC);
+			}
 		}
-		
 	}
 	
 
@@ -727,7 +748,7 @@ void PhysicsPlayground::makeImage(std::string filename, int width, int height, f
 	auto entity = ECS::CreateEntity();
 	if (filename == "Health10.png") {
 		healthBar = entity;
-	}else if (filename == "StartScreen.png") {
+	}else if (filename == "Start.png") {
 		screen = entity;
 	}
 	
