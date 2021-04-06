@@ -63,7 +63,7 @@ protected:
 	int stateOfGame = STARTSCREEN;
 
 	int tSi = 0;
-	std::vector<std::string>tutorialMess{ "t1.png", "t2.png", "t3.png", "t4.png", "t5.png", "t6.png", "t7.png", "t8.png" };
+	std::vector<std::string>tutorialMess{ "1t.png", "2t.png", "3t.png", "4t.png", "5t.png", "6t.png", "7t.png", "8t.png" };
 
 
 	PhysicsPlaygroundListener listener;
