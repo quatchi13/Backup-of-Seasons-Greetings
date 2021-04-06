@@ -226,8 +226,8 @@ void PhysicsPlayground::InitScene(float windowWidth, float windowHeight)
 	{
 	shooter.shoots = true;
 	shooter.sprite = "Bean_shooter.png";
-	shooter.files = { "aSprites/Bean Shooter/Bean shooter1.png" };
-	shooter.totalFrames = 60;
+	shooter.files = { "aSprites/Bean Shooter/BeanBaby1.png",  "aSprites/Bean Shooter/BeanBaby4.png" };
+	shooter.totalFrames = 120;
 	marcher.moves = true;
 	marcher.eVelo = vec3(-50, 1, 0);
 	marcher.sprite = "CornKnight1.png";
@@ -652,6 +652,7 @@ void PhysicsPlayground::KeyboardDown()
 	else if (stateOfGame == STARTSCREEN){
 		if (Input::GetKeyDown(Key::Enter))
 		{
+			std::cout << "loading";
 			std::string fName = "BigMenu.png";
 			ECS::GetComponent<Sprite>(screen).LoadSprite(fName, 195, 130);
 			stateOfGame = MENU;
@@ -671,7 +672,7 @@ void PhysicsPlayground::KeyboardDown()
 		}
 	}
 	else if (stateOfGame == TSCREEN) {
-		if (Input::GetKeyDown(Key::Enter)) {
+		if (Input::GetKeyDown(Key::RightArrow)) {
 			tSi++;
 			if (tSi < tutorialMess.size()) {
 				ECS::GetComponent<Sprite>(screen).LoadSprite(tutorialMess[tSi], 195, 130);
@@ -680,6 +681,11 @@ void PhysicsPlayground::KeyboardDown()
 				ECS::GetComponent<PhysicsBody>(MainEntities::CameraFocus()).SetPosition(b2Vec2(0, 15));
 				stateOfGame = PLAY;
 			}
+		}
+
+		if ((Input::GetKeyDown(Key::LeftArrow)) && tSi) {
+			tSi--;
+			ECS::GetComponent<Sprite>(screen).LoadSprite(tutorialMess[tSi], 195, 130);
 		}
 	}
 	else {
