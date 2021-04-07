@@ -64,7 +64,7 @@ protected:
 
 	int tSi = 0;
 	std::vector<std::string>tutorialMess{ "1t.png", "2t.png", "3t.png", "4t.png", "5t.png", "6t.png", "7t.png", "8t.png" };
-
+	std::vector<std::string>genScreens{ "BigMenu.png", "instructions.png", "Credit.png", "Transition_1.png", "Transition_2.png", "Transition_3.png", "Win.png", "gameOver.png", "Start.png" };
 
 	PhysicsPlaygroundListener listener;
 	int healthBar;
