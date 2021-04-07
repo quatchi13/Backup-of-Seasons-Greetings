@@ -131,7 +131,10 @@ void PhysicsPlayground::InitScene(float windowWidth, float windowHeight)
 
 	makeImage("Start.png", 195, 130, 1, 0, -495, 30);
 	makeImage("Health10.png", 25, 25, 1, 105, 60, 40);
-	makeImage("ground.png", 200, 200, 1, 0, 15, 1);
+	//makeImage("ground.png", 200, 200, 1, 0, 15, 1);//level 3
+	makeImage("aSprites/T/F/SnowTileBackground.png", 200, 200, 1, 0, 15, 1);// TUT
+	//makeImage("aSprites/Winter/GroundSnow.png", 200, 200, 1, 0, 15, 1);// level 2
+	//makeImage("aSprites/Winter/GrassSnow.png", 200, 200, 1, 0, 15, 1);//level 1
 
 	//loading every image because we here at JAFBO hate ourselves
 	{
@@ -141,7 +144,8 @@ void PhysicsPlayground::InitScene(float windowWidth, float windowHeight)
 	}
 
 	{
-		makeJAnimFrame(std::vector<std::string>{
+		//level 2 and 3
+		/*makeJAnimFrame(std::vector<std::string>{
 			"aSprites/TileTopLeft/1.png",
 				"aSprites/TileTopLeft/2.png",
 				"aSprites/TileTopLeft/3.png",
@@ -204,7 +208,69 @@ void PhysicsPlayground::InitScene(float windowWidth, float windowHeight)
 				"aSprites/Bottom Right/5.png",
 				"aSprites/Bottom Right/7.png",
 				"aSprites/Bottom Right/10.png"
-		}, std::vector<int>{9, 6, 6, 9, 3}, 80, 20, vec3(50, -50, 1));
+		}, std::vector<int>{9, 6, 6, 9, 3}, 80, 20, vec3(50, -50, 1));*/
+
+		//TUT (Snow winther igloo)
+		//makeJAnimFrame(std::vector<std::string>{
+		//	"aSprites/T/F/1.png",
+		//		"aSprites/T/1/2.png",
+		//		"aSprites/T/1/3.png"
+		//}, std::vector<int>{16, 9, 9}, 80, 20, vec3(-50, 70, 1));
+		//makeJAnimFrame(std::vector<std::string>{
+		//	"aSprites/T/2/1.png",
+		//		"aSprites/T/2/2.png",
+		//		"aSprites/T/2/3.png"
+		//}, std::vector<int>{16, 9, 9}, 80, 20, vec3(50, 70, 1));
+		////makeFrame("aSprites/T/F/1.png", 80, 20, vec3(-50, 70, 1));
+		////makeFrame("aSprites/T/F/2.png", 80, 20, vec3(50, 70, 1));
+		//makeFrame("aSprites/T/F/3.png", 20, 40, vec3(-80, 40, 1));
+		//makeFrame("aSprites/T/F/4.png", 20, 40, vec3(80, 40, 1));
+		//makeFrame("aSprites/T/F/3.png", 20, 40, vec3(-80, -20, 1));
+		//makeFrame("aSprites/T/F/4.png", 20, 40, vec3(80, -20, 1));
+		//makeFrame("aSprites/T/F/5.png", 80, 20, vec3(-50, -50, 1));
+		//makeFrame("aSprites/T/F/6.png", 80, 20, vec3(50, -50, 1));
+
+		//Level 1 (wood)
+		makeJAnimFrame(std::vector<std::string>{
+			"aSprites/Winter/A/1/1.png",
+				"aSprites/Winter/A/1/2.png",
+				"aSprites/Winter/A/1/3.png"
+		}, std::vector<int>{16, 9, 9}, 80, 20, vec3(-50, 70, 1));
+		makeJAnimFrame(std::vector<std::string>{
+			"aSprites/Winter/A/2/1.png",
+				"aSprites/Winter/A/2/2.png",
+				"aSprites/Winter/A/2/3.png"
+		}, std::vector<int>{16, 9, 9}, 80, 20, vec3(50, 70, 1));
+		makeJAnimFrame(std::vector<std::string>{
+			"aSprites/Winter/A/3/1.png",
+				"aSprites/Winter/A/3/2.png",
+				"aSprites/Winter/A/3/3.png"
+		}, std::vector<int>{16, 9, 9}, 20, 40, vec3(-80, 40, 1));
+		makeJAnimFrame(std::vector<std::string>{
+			"aSprites/Winter/A/4/1.png",
+				"aSprites/Winter/A/4/2.png",
+				"aSprites/Winter/A/4/3.png"
+		}, std::vector<int>{16, 9, 9}, 20, 40, vec3(80, 40, 1));
+		makeJAnimFrame(std::vector<std::string>{
+			"aSprites/Winter/A/3/1.png",
+				"aSprites/Winter/A/3/2.png",
+				"aSprites/Winter/A/3/3.png"
+		}, std::vector<int>{16, 9, 9}, 20, 40, vec3(-80, -20, 1));
+		makeJAnimFrame(std::vector<std::string>{
+			"aSprites/Winter/A/4/1.png",
+				"aSprites/Winter/A/4/2.png",
+				"aSprites/Winter/A/4/3.png"
+		}, std::vector<int>{16, 9, 9}, 20, 40, vec3(80, -20, 1));
+		makeJAnimFrame(std::vector<std::string>{
+			"aSprites/Winter/A/5/1.png",
+				"aSprites/Winter/A/5/2.png",
+				"aSprites/Winter/A/5/3.png"
+		}, std::vector<int>{16, 9, 9}, 80, 20, vec3(-50, -50, 1));
+		makeJAnimFrame(std::vector<std::string>{
+			"aSprites/Winter/A/6/1.png",
+				"aSprites/Winter/A/6/2.png",
+				"aSprites/Winter/A/6/3.png"
+		}, std::vector<int>{16, 9, 9}, 80, 20, vec3(50, -50, 1));
 	}
 
 
@@ -1194,13 +1260,18 @@ void PhysicsPlayground::newRoom(int room, int dTel) {
 					if(!dungeon->rooms[room][a]) {
 						block = nonDoors[nCount];
 						nCount++;
-						std::string name = "tWall.png";
+						//std::string name = "tWall.png";//level 2 and 3 
+						//std::string name = "aSprites/T/SnowTop.png";//tut 
+						std::string name = "aSprites/Winter/F/Top_Bottom/1.png";//level 1 
 						ECS::GetComponent<Sprite>(block).LoadSprite(name, 20, 20);
 						ECS::GetComponent<PhysicsBody>(block).SetPosition(b2Vec2(j * 20, 10 + (i * 20)));
 					}else if (eCount && dungeon->rooms[room][a] == 1) {
 						block = blockedDoors[dCount];
 						ECS::GetComponent<PhysicsBody>(block).SetPosition(b2Vec2(j * 20, 10 + (i * 20)));
-						ECS::GetComponent<PhysicsBody>(block).SetRotationAngleDeg(0);
+						//ECS::GetComponent<PhysicsBody>(block).SetRotationAngleDeg(0);
+						//std::string name = "aSprites/T/SnowTopBlock.png";//tut
+						std::string name = "aSprites/Winter/F/GrassTopBlock/1.png";//level 1 
+						ECS::GetComponent<Sprite>(block).LoadSprite(name, 20, 20);
 						dCount++;
 					}
 				}
@@ -1210,14 +1281,19 @@ void PhysicsPlayground::newRoom(int room, int dTel) {
 					if (!dungeon->rooms[room][a]) {
 						block = nonDoors[nCount];
 						nCount++;
-						std::string name = "lWall.png";
+						//std::string name = "lWall.png";//level 2 and 3
+						//std::string name = "aSprites/T/SnowLeft.png";//tut
+						std::string name = "aSprites/Winter/F/Left/1.png";//level 1 
 						ECS::GetComponent<Sprite>(block).LoadSprite(name, 20, 20);
 						ECS::GetComponent<PhysicsBody>(block).SetPosition(b2Vec2(j * 20, 10 + (i * 20)));
 					}
 					else if (eCount && dungeon->rooms[room][a] == 1) {
 						block = blockedDoors[dCount];
 						ECS::GetComponent<PhysicsBody>(block).SetPosition(b2Vec2(j * 20, 10 + (i * 20)));
-						ECS::GetComponent<PhysicsBody>(block).SetRotationAngleDeg(90);
+						//ECS::GetComponent<PhysicsBody>(block).SetRotationAngleDeg(90);
+						//std::string name = "aSprites/T/SnowLeftBlock.png";//tut
+						std::string name = "aSprites/Winter/F/GrassLeftBlock/1.png";//level 1
+						ECS::GetComponent<Sprite>(block).LoadSprite(name, 20, 20);
 						dCount++;
 					}
 				}
@@ -1227,14 +1303,19 @@ void PhysicsPlayground::newRoom(int room, int dTel) {
 					if (!dungeon->rooms[room][a]) {
 						block = nonDoors[nCount];
 						nCount++;
-						std::string name = "rWall.png";
+						//std::string name = "rWall.png";//2 and 3 
+						//std::string name = "aSprites/T/SnowRight.png";//tut
+						std::string name = "aSprites/Winter/F/Right/1.png";//level 1
 						ECS::GetComponent<Sprite>(block).LoadSprite(name, 20, 20);
 						ECS::GetComponent<PhysicsBody>(block).SetPosition(b2Vec2(j * 20, 10 + (i * 20)));
 					}
 					else if (eCount && dungeon->rooms[room][a] == 1) {
 						block = blockedDoors[dCount];
 						ECS::GetComponent<PhysicsBody>(block).SetPosition(b2Vec2(j * 20, 10 + (i * 20)));
-						ECS::GetComponent<PhysicsBody>(block).SetRotationAngleDeg(270);
+						//ECS::GetComponent<PhysicsBody>(block).SetRotationAngleDeg(270);
+						//std::string name = "aSprites/T/SnowRightBlock.png";//tut
+						std::string name = "aSprites/Winter/F/GrassRightBlock/1.png";//level 1
+						ECS::GetComponent<Sprite>(block).LoadSprite(name, 20, 20);
 						dCount++;
 					}
 				}
@@ -1243,7 +1324,9 @@ void PhysicsPlayground::newRoom(int room, int dTel) {
 					if (!dungeon->rooms[room][a]) {
 						block = nonDoors[nCount];
 						nCount++;
-						std::string name = "bWall.png";
+						//std::string name = "bWall.png";//level 2 and 3 
+						//std::string name = "aSprites/T/SnowBottom.png";//tut
+						std::string name = "aSprites/Winter/F/Top_Bottom/1.png";//level 1
 						ECS::GetComponent<Sprite>(block).LoadSprite(name, 20, 20);
 						ECS::GetComponent<PhysicsBody>(block).SetPosition(b2Vec2(j * 20, 10 + (i * 20)));
 					}
@@ -1251,7 +1334,10 @@ void PhysicsPlayground::newRoom(int room, int dTel) {
 
 						block = blockedDoors[dCount];
 						ECS::GetComponent<PhysicsBody>(block).SetPosition(b2Vec2(j * 20, 10 + (i * 20)));
-						ECS::GetComponent<PhysicsBody>(block).SetRotationAngleDeg(180);
+						//ECS::GetComponent<PhysicsBody>(block).SetRotationAngleDeg(180);
+						//std::string name = "aSprites/T/SnowBottomBlock.png";//tut
+						std::string name = "aSprites/Winter/F/GrassBottomBlock/1.png";//level 1
+						ECS::GetComponent<Sprite>(block).LoadSprite(name, 20, 20);
 						dCount++;
 					}
 				}
@@ -1271,7 +1357,11 @@ void PhysicsPlayground::newRoom(int room, int dTel) {
 				if (dungeon->rooms[room][a] == 0) {
 					block = walls[wCount];
 					wCount++;
-					std::string name = "PumkinMini1.png";
+					//std::string name = "aSprites/BS/FPumpkin.png";//level 2
+					//std::string name = "aSprites/BS/SPumpkin.png";//level 3
+					std::string name = "aSprites/T/SnowPile.png";//level 1
+					//std::string name = "aSprites/Winter/Igloo.png";//TUT
+					ECS::GetComponent<Sprite>(block).LoadSprite(name, 20, 20);
 					ECS::GetComponent<Sprite>(block).LoadSprite(name, 20, 20);
 					ECS::GetComponent<PhysicsBody>(block).SetPosition(b2Vec2(j * 20, 10 + (i * 20)));
 				}
