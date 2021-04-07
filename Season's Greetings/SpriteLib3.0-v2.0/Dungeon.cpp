@@ -3,7 +3,13 @@
 #include <time.h>
 #include <vector>
 #include "Dungeon.h"
+#include <random>
 
+int Dungeon::genRand(int max, int min = 0) {
+	int random = min + (rand() % max);
+
+	return random;
+}
 
 void Dungeon::setEnemyCount() {
 	indexes.clear();
@@ -193,18 +199,525 @@ void Dungeon::getRoomPool() {
 }
 
 
+void Dungeon::resetRoom() {
+	for (int i = 1; i < 6; i++) {
+		for (int j = 1; j < 8; j++) {
+			rArray[i][j] = 3;
+		}
+	}
+
+	rArray[1][4] = 1;
+	rArray[3][1] = 1;
+	rArray[3][7] = 1;
+	rArray[5][4] = 1;
+}
+void Dungeon::pushRoomVec() {
+	for (int i = 0; i < 7; i++) {
+		for (int j = 0; j < 9; j++) {
+			rVec.push_back(rArray[i][j]);
+		}
+	}
+
+	rooms.push_back(rVec);
+	rVec.clear();
+}
+bool Dungeon::besideFloor(bool timmyCall) {
+	if (timmyCall) {
+		if ((rArray[y - 1][x] != 1) || (rArray[y + 1][x] != 1)) {
+			return true;
+		}
+		else if ((rArray[y][x - 1] != 1) || (rArray[y][x + 1] != 1)) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	else {
+		if ((rArray[y - 1][x] == 1) || (rArray[y + 1][x] == 1)) {
+			return true;
+		}
+		else if ((rArray[y][x - 1] == 1) || (rArray[y][x + 1] == 1)) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+}
+int Dungeon::countSpaces() {
+	int total = 0;
+	for (int i = 0; i < 7; i++) {
+		for (int j = 0; j < 9; j++) {
+			if (rArray[i][j] == 1) {
+				total++;
+			}
+		}
+	}
+
+	return total;
+}
+void Dungeon::verticalPath(int start[2], int dest, int pT) {
+	int advance = -1;
+	int diff = start[0] - dest;
+	int h = start[1];
+
+	if (diff) {
+		if (diff < 0) {
+			diff *= -1;
+			advance *= -1;
+		}
+
+		for (int i = 0; i < diff; i++) {
+			start[0] += advance;
+			rArray[start[0]][h] = pT;
+		}
+	}
+}
+void Dungeon::horizontalPath(int start[2], int dest, int pT) {
+	int advance = -1;
+	int diff = start[1] - dest;
+	int v = start[0];
+
+	if (diff) {
+		if (diff < 0) {
+			diff *= -1;
+			advance *= -1;
+		}
+
+		for (int i = 0; i < diff; i++) {
+			start[1] += advance;
+			rArray[v][start[1]] = pT;
+		}
+	}
+}
+void Dungeon::flood(int block) {
+	for (int i = 0; i < 7; i++) {
+		for (int j = 0; j < 9; j++) {
+			if (rArray[i][j] == 3) {
+				rArray[i][j] = block;
+			}
+		}
+	}
+}
 
 
+void Dungeon::littleJimmy() {
+	int space = 31 - countSpaces();
+	space = genRand(space - 5, 1);
+	std::cout << space << '\n';
+	bool failed = true;
 
-void Dungeon::selectRooms() {
-	getRoomPool();
-	drawRoomsFromPool();
-	setDoors();
+	for (int i = 0; i < space; i++) {
+		while (failed) {
+			std::cout << "fwip";
+			y = 1 + rand()%5;
+			std::cout << y;
+			x = 1 + rand() % 7;
+			std::cout << x;
+
+			std::cout << rArray[y][x];
+			std::cout << besideFloor(0) << '\n';
+
+			if ((rArray[y][x] != 1)){
+				if (besideFloor(0)) {
+					rArray[y][x] = 1;
+					failed = false;
+				}
+			}
+		}
+		failed = true;
+	}
+}
+void Dungeon::shuffle(int array[4][2]) {
+	int array2[4][2];
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 2; j++) {
+			array2[i][j] = array[i][j];
+		}
+	}
+
+	bool selected[4]{ false };
+	for (int i = 0; i < 4; i++) {
+		bool unused = false;
+		int index;
+		while (!unused) {
+			index = genRand(4);
+			if (!selected[index]) {
+				selected[index] = true;
+				unused = true;
+				array[i][0] = array2[index][0];
+				array[i][1] = array2[index][1];
+			}
+		}
+	}
+
+}
+void Dungeon::roomDot(int zone){
+	switch (zone) {
+	case 1:
+		y = genRand(3, 1);
+		x = genRand(4, 1);
+		break;
+	case 2:
+		y = genRand(3, 1);
+		x = genRand(4, 4);
+		break;
+	case 3:
+		y = genRand(3, 3);
+		x = genRand(4, 1);
+		break;
+	case 4:
+		y = genRand(3, 3);
+		x = genRand(4, 4);
+		break;
+	default:
+		y = genRand(5, 1);
+		x = genRand(7, 1);
+	}
+}
+void Dungeon::roomGen1() {
+	int locs[4][2]{ {1, 4}, {3, 1}, {3, 7}, {5, 4} };
+	shuffle(locs);
+	int start[2];
+	int finish[2];
+	int tween[2];
+	int distY, distX;
+	int zone;
+	int t;
+	int u;
+	bool order;
+
+	for (int i = 0; i < 3; i++) {
+		if (i < 2) {
+			t = i + 1;
+			u = i;
+		}
+		else {
+			u = 3;
+			t = genRand(3);
+		}
+		start[0] = locs[u][0];
+		start[1] = locs[u][1];
+		finish[0] = locs[t][0];
+		finish[1] = locs[t][1];
+
+		distY = finish[0] - start[0];
+		distX = finish[1] - start[1];
+
+		if (!distY || !distX) {
+			zone = 0;
+		}
+		else {
+			if (start[0] == 1 || finish[0] == 1) {
+				if (finish[1] == 1 || start[1] == 1) {
+					zone = 1;
+				}
+				else {
+					zone = 2;
+				}
+			}
+			else {
+				if (finish[1] == 1 || start[1] == 1) {
+					zone = 3;
+				}
+				else {
+					zone = 4;
+				}
+			}
+
+		}
+
+		std::cout << start[0] << start[1] << '\n';
+		std::cout << finish[0] << finish[1] << '\n';
+		std::cout << zone << '\n';
+		roomDot(zone);
+
+		order = genRand(2);
+		if (order) {
+			horizontalPath(start, x, 1);
+			verticalPath(start, y, 1);
+		}
+		else {
+			verticalPath(start, y, 1);
+			horizontalPath(start, x, 1);
+		}
+
+		order = genRand(2);
+		if (order) {
+			horizontalPath(start, finish[1], 1);
+			verticalPath(start, finish[0], 1);
+		}
+		else {
+			verticalPath(start, finish[0], 1);
+			horizontalPath(start, finish[1], 1);
+		}
+
+	}
+
+	flood(2 * genRand(2));
+
+	if (!genRand(2)) {
+		littleJimmy();
+	}
 }
 
 
 
+void Dungeon::hRoom() {
+	int barPos = genRand(3, 2);
+	int tP = 2 * genRand(2);
 
+	rArray[2][2] = tP;
+	rArray[3][2] = tP;
+	rArray[4][2] = tP;
+
+	rArray[barPos][3] = tP;
+	rArray[barPos][4] = tP;
+	rArray[barPos][5] = tP;
+
+	rArray[2][6] = tP;
+	rArray[3][6] = tP;
+	rArray[4][6] = tP;
+}
+void Dungeon::shapeRoom() {
+	int shape = genRand(4);
+	int tP = 2 * genRand(2);
+
+	switch (shape) {
+	case(0):
+		rArray[1][1] = tP;
+		rArray[1][2] = tP;
+		rArray[1][6] = tP;
+		rArray[1][7] = tP;
+		rArray[2][2] = tP;
+		rArray[2][3] = tP;
+		rArray[2][5] = tP;
+		rArray[2][6] = tP;
+		rArray[4][2] = tP;
+		rArray[4][3] = tP;
+		rArray[4][5] = tP;
+		rArray[4][6] = tP;
+		rArray[5][1] = tP;
+		rArray[5][2] = tP;
+		rArray[5][6] = tP;
+		rArray[5][7] = tP;
+		break;
+	case(1):
+		rArray[1][1] = tP;
+		rArray[1][7] = tP;
+		rArray[2][2] = tP;
+		rArray[2][4] = tP;
+		rArray[2][6] = tP;
+		rArray[3][4] = tP;
+		rArray[4][2] = tP;
+		rArray[4][4] = tP;
+		rArray[4][6] = tP;
+		rArray[5][1] = tP;
+		rArray[5][7] = tP;
+		break;
+	default:
+		rArray[1][1] = tP;
+		rArray[1][2] = tP;
+		rArray[1][6] = tP;
+		rArray[1][7] = tP;
+		rArray[2][1] = tP;
+		rArray[2][2] = tP;
+		rArray[2][6] = tP;
+		rArray[2][7] = tP;
+		rArray[4][1] = tP;
+		rArray[4][2] = tP;
+		rArray[4][6] = tP;
+		rArray[4][7] = tP;
+		rArray[5][1] = tP;
+		rArray[5][2] = tP;
+		rArray[5][6] = tP;
+		rArray[5][7] = tP;
+	}
+}
+void Dungeon::slabRoom() {
+	std::cout << "slab room!\n";
+	int sl1, sl2, sl3, sl4;
+	int pT = 2 * genRand(2);
+	int start[2];
+	std::vector<int>xStart;
+
+	sl1 = genRand(2);
+	sl2 = genRand(5, 1);
+	sl3 = genRand(5, 1);
+	sl4 = genRand(2);
+
+	xStart.push_back(sl1 * 4);
+	xStart.push_back(sl2 - 1);
+	xStart.push_back(sl3 - 1);
+	xStart.push_back(sl4 * 4);
+
+	for (int i = 1; i <= 4; i++) {
+		if (i >= 3) {
+			start[0] = i + 1;
+		}
+		else {
+			start[0] = i;
+		}
+		start[1] = xStart[i - 1];
+		horizontalPath(start, start[1] + 3, pT);
+	}
+
+}
+void Dungeon::pillarRoom() {
+	int colA, colB, colC;
+	int startedFromTheBottom = genRand(2);
+	int start[2];
+	int pT = 2 * genRand(2);
+
+	colA = genRand(2, 1);
+	colB = genRand(5);
+	colC = genRand((4 - colB) + 1);
+
+	if (startedFromTheBottom) {
+		start[0] = 6;
+		start[1] = 1;
+		verticalPath(start, 6 - colA, pT);
+
+		start[0] = 6;
+		start[1] = 2;
+		verticalPath(start, 6 - colB, pT);
+
+		start[0] = 0;
+		start[1] = 3;
+		verticalPath(start, colC, pT);
+
+		start[0] = 0;
+		start[1] = 5;
+		verticalPath(start, colC, pT);
+
+		start[0] = 6;
+		start[1] = 6;
+		verticalPath(start, 6 - colB, pT);
+
+		start[0] = 6;
+		start[1] = 7;
+		verticalPath(start, 6 - colA, pT);
+	}
+	else {
+		start[0] = 0;
+		start[1] = 1;
+		verticalPath(start, colA, pT);
+
+		start[0] = 0;
+		start[1] = 2;
+		verticalPath(start, colB, pT);
+
+		start[0] = 6;
+		start[1] = 3;
+		verticalPath(start, 6 - colC, pT);
+
+		start[0] = 6;
+		start[1] = 5;
+		verticalPath(start, 6 - colC, pT);
+
+		start[0] = 0;
+		start[1] = 6;
+		verticalPath(start, colB, pT);
+
+		start[0] = 0;
+		start[1] = 7;
+		verticalPath(start, colA, pT);
+	}
+}
+void Dungeon::corner(int bType, int y1, int x1, int y2, int x2, int y3, int x3) {
+	int tile1 = rArray[y1][x1];
+	int tile2 = rArray[y2][x2];
+	int tile3 = rArray[y3][x3];
+	if (tile1 == 1) {
+		if (tile2 + tile3 == 2) {
+			rArray[y1][x1] = bType;
+			tile1 = rArray[y1][x1];
+			if (tile2 == 1) {
+				rArray[y2][x2] = tile1;
+			}
+
+			if (tile3 == 1) {
+				rArray[y3][x3] = tile1;
+			}
+		}
+	}
+
+}
+void Dungeon::cornerRoom() {
+	int pT = genRand(2) * 2;
+	corner(pT, 1, 1, 1, 2, 2, 1);
+	corner(pT, 1, 7, 1, 6, 2, 7);
+	corner(pT, 5, 1, 4, 1, 5, 2);
+	corner(pT, 5, 7, 5, 6, 4, 7);
+}
+void Dungeon::littleTimmy() {
+	int space = countSpaces() - 11;
+	bool failed = true;
+	int blocktype = 2 * genRand(2);
+
+	space = genRand(space, 1);
+
+	for (int i = 0; i < space; i++) {
+		while (failed) {
+			y = genRand(5, 1);
+			x = genRand(7, 1);
+
+			if ((x != 4 && y != 3) && (rArray[y][x] == 1 && besideFloor(1))) {
+				rArray[y][x] = blocktype;
+				failed = false;
+			}
+		}
+		failed = true;
+	}
+}
+void Dungeon::roomGen2() {
+	flood(1);
+	int genMethod = genRand(15);
+	if (genMethod > 11) {
+		slabRoom();
+	}
+	else if (genMethod > 8) {
+		pillarRoom();
+	}
+	else if (genMethod > 5) {
+		shapeRoom();
+	}
+	else if (genMethod > 3) {
+		hRoom();
+	}
+	else if (genMethod > 1) {
+		cornerRoom();
+
+		if (!genRand(3)) {
+			littleTimmy();
+		}
+	}
+	else {
+		littleTimmy();
+	}
+}
+
+void Dungeon::generateRooms() {
+	for (int i = 0; i < nOfRooms; i++) {
+		if (i == 4) {
+			flood(1);
+		}
+		else {
+			if (genRand(5) > 2) {
+				roomGen1();
+			}
+			else {
+				roomGen2();
+			}
+		}
+
+		pushRoomVec();
+		resetRoom();
+	}
+
+	setDoors();
+}
 
 
 
@@ -391,12 +904,13 @@ void Dungeon::generateMap() {
 
 Dungeon::Dungeon(int l)
 {
+	srand(time(NULL));
 	level = l;
 	nOfRooms = (7 + ((l - 1) * 2) + rand() % 2);
-	srand(time(0));
+	
 	isTutorial = false;
 	generateMap();
-	selectRooms();
+	generateRooms();
 	getPosition(5);
 	populateDungeon();
 	std::cout << "success";

@@ -12,6 +12,7 @@
 #include <fstream>
 
 
+
 PhysicsPlayground::PhysicsPlayground()
 {
 }
@@ -131,6 +132,13 @@ void PhysicsPlayground::InitScene(float windowWidth, float windowHeight)
 	makeImage("Start.png", 195, 130, 1, 0, -495, 30);
 	makeImage("Health10.png", 25, 25, 1, 105, 60, 40);
 	makeImage("ground.png", 200, 200, 1, 0, 15, 1);
+
+	//loading every image because we here at JAFBO hate ourselves
+	{
+		for (int i = 0; i < genScreens.size(); i++) {
+			ECS::GetComponent<Sprite>(screen).LoadSprite(genScreens[i], 195, 130);
+		}
+	}
 
 	{
 		makeJAnimFrame(std::vector<std::string>{
@@ -298,18 +306,24 @@ void PhysicsPlayground::Update()
 					//this line is ok though 
 					dungeon->enemiesInRooms[dungeon->currentRoom][0]--;
 					if (!dungeon->enemiesInRooms[dungeon->currentRoom][0]) {
-						for (int i = 0; i < 4; i++) {
-							ECS::GetComponent<PhysicsBody>(blockedDoors[i]).SetPosition(b2Vec2(500, 500));
+						for (int j = 0; j < 4; j++) {
+							ECS::GetComponent<PhysicsBody>(blockedDoors[j]).SetPosition(b2Vec2(500, 500));
 						}
 
 						dungeon->mapCleared = true;
-						for (int i = 0; i < dungeon->nOfRooms; i++) {
-							if (dungeon->enemiesInRooms[i][0]) {
+						for (int j = 0; j < dungeon->nOfRooms; j++) {
+							if (dungeon->enemiesInRooms[j][0]) {
 								dungeon->mapCleared = false;
 							}
 						}
 
 						if (dungeon->mapCleared) {
+							for (int j = 0; j < hostileBullets.size(); j++) {
+								ECS::GetComponent<PhysicsBody>(hostileBullets[i]).SetVelocity(vec3(0.f, 0.f, 0.f));
+								ECS::GetComponent<PhysicsBody>(hostileBullets[i]).SetPosition(b2Vec2(500, 520));
+								ECS::GetComponent<IsInactive>(hostileBullets[i]).hit = false;
+								ECS::GetComponent<IsInactive>(hostileBullets[i]).m_notInUse = true;
+							}
 							std::string screenName;
 							if (dungeon->isTutorial) {
 								screenName = "Transition_1.png";
@@ -519,6 +533,14 @@ void PhysicsPlayground::Update()
 		for (int i = 0; i < 4; i++) {
 			if (ECS::GetComponent<Door>(doors[i]).activated) {
 				ECS::GetComponent<Door>(doors[i]).activated = false;
+
+				for (int j = 0; j < hostileBullets.size(); j++) {
+					ECS::GetComponent<PhysicsBody>(hostileBullets[i]).SetVelocity(vec3(0.f, 0.f, 0.f));
+					ECS::GetComponent<PhysicsBody>(hostileBullets[i]).SetPosition(b2Vec2(500, 520));
+					ECS::GetComponent<IsInactive>(hostileBullets[i]).hit = false;
+					ECS::GetComponent<IsInactive>(hostileBullets[i]).m_notInUse = true;
+				}
+
 				dungeon->position[0] += ECS::GetComponent<Door>(doors[i]).yOffSet;
 				dungeon->position[1] += ECS::GetComponent<Door>(doors[i]).xOffSet;
 
@@ -659,12 +681,14 @@ void PhysicsPlayground::KeyboardDown()
 		}
 		if (Input::GetKeyDown(Key::Shift))
 		{
+			std::cout << "loading";
 			std::string fName = "instructions.png";
 			ECS::GetComponent<Sprite>(screen).LoadSprite(fName, 195, 130);
 			stateOfGame = MENU;
 		}
 		if (Input::GetKeyDown(Key::RightArrow))
 		{
+			std::cout << "loading";
 			std::string fName = "Credit.png";
 			ECS::GetComponent<Sprite>(screen).LoadSprite(fName, 195, 130);
 			stateOfGame = MENU;
