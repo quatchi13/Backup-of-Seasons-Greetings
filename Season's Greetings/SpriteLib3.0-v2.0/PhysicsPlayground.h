@@ -49,6 +49,7 @@ public:
 	void setupRoomEnemies(int);
 	void initEnemy(int, Enemy);
 	void pushBackAnimations(Enemy, int);
+	void updateEnvironment();
 
 protected:
 	enum gameState {
@@ -64,7 +65,13 @@ protected:
 
 	int tSi = 0;
 	std::vector<std::string>tutorialMess{ "1t.png", "2t.png", "3t.png", "4t.png", "5t.png", "6t.png", "7t.png", "8t.png" };
-	std::vector<std::string>genScreens{ "BigMenu.png", "instructions.png", "Credit.png", "Transition_1.png", "Transition_2.png", "Transition_3.png", "Win.png", "gameOver.png", "Start.png" };
+	std::vector<std::string>genScreens{ "BigMenu.png", "instructions.png", "Credit.png", "Transition_1.png", "Transition_2.png", "Transition_3.png", "Win.png", "gameOver.png", "aSprites/Winter/GrassSnow.png", "aSprites/Winter/GroundSnow.png", "ground.png",  "Start.png" };
+	std::vector<std::string>tileSetTut{"aSprites/T/F/1.png", "aSprites/T/F/2.png", "aSprites/T/F/3.png", "aSprites/T/F/4.png", "aSprites/T/F/5.png", "aSprites/T/F/6.png", "aSprites/T/F/SnowTileBackground.png", "aSprites/T/SnowTop.png",  "aSprites/T/SnowLeft.png", "aSprites/T/SnowRight.png", "aSprites/T/SnowBottom.png", "aSprites/T/SnowTopBlock.png",  "aSprites/T/SnowLeftBlock.png", "aSprites/T/SnowRightBlock.png", "aSprites/T/SnowBottomBlock.png", "aSprites/Winter/Igloo.png"};
+	std::vector<std::string>tileSet1{ "aSprites/Winter/A/1/1.png", "aSprites/Winter/A/2/1.png", "aSprites/Winter/A/3/1.png", "aSprites/Winter/A/4/1.png", "aSprites/Winter/A/5/1.png", "aSprites/Winter/A/6/1.png", "aSprites/Winter/GrassSnow.png", "aSprites/Winter/F/Top_Bottom/1.png", "aSprites/Winter/F/Left/1.png", "aSprites/Winter/F/Right/1.png", "aSprites/Winter/F/Top_Bottom/1.png",  "aSprites/Winter/F/GrassTopBlock/1.png", "aSprites/Winter/F/GrassLeftBlock/1.png", "aSprites/Winter/F/GrassRightBlock/1.png", "aSprites/Winter/F/GrassBottomBlock/1.png", "aSprites/T/SnowPile.png" };
+	std::vector<std::string>tileSet2{ "aSprites/TileTopLeft/1.png", "aSprites/TileTopRight/1.png", "aSprites/Left Side/1.png", "aSprites/RightSide/1.png", "aSprites/Bottom Left/1.png", "aSprites/Bottom Right/1.png", "aSprites/Winter/GroundSnow.png", "tWall.png", "lWall.png", "rWall.png", "bWall.png", "tBlocked.png", "lBlocked.png", "rBlocked.png", "bBlocked.png", "aSprites/BS/FPumpkin.png" };
+	std::vector<std::string>tileSet3{ "aSprites/TileTopLeft/1.png", "aSprites/TileTopRight/1.png", "aSprites/Left Side/1.png", "aSprites/RightSide/1.png", "aSprites/Bottom Left/1.png", "aSprites/Bottom Right/1.png", "ground.png", "tWall.png", "lWall.png", "rWall.png", "bWall.png", "tBlocked.png", "lBlocked.png", "rBlocked.png", "bBlocked.png", "aSprites/BS/SPumpkin.png" };
+	std::vector<std::string>* tSet = &tileSetTut;
+
 
 	PhysicsPlaygroundListener listener;
 	int healthBar;
@@ -90,6 +97,7 @@ protected:
 	std::vector<int>blockedDoors;
 	std::vector<int>nonDoors;
 	std::vector<int>jAnimatedEntities;
+	std::vector<int>frameTiles;
 
 	int groundTile;
 	int block;
