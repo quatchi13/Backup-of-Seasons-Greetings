@@ -1,5 +1,6 @@
 #include "Player.h"
 #include "Damage.h"
+#include "PlayerHealth.h"
 
 Player::Player()
 {
@@ -274,6 +275,10 @@ void Player::MovementUpdate()
 void Player::AnimationUpdate()
 {
 	int activeAnimation = 0;
+	auto& health = ECS::GetComponent<PlayerHealth>(MainEntities::MainPlayer());
+	if (health.hasBeenDamaged == true) {
+		m_Damage = true;
+	}
 
 	if (m_moving)
 	{
@@ -323,6 +328,22 @@ void Player::AnimationUpdate()
 			//m_animController->GetAnimation(m_animController->GetActiveAnim()).Reset();
 
 			//activeAnimation = IDLE;
+		}
+	}
+	else if (m_Damage)
+	{
+		activeAnimation = DAMAGE;
+
+		//Check if the attack animation is done
+		if (m_animController->GetAnimation(m_animController->GetActiveAnim()).GetAnimationDone())
+		{
+			//Will auto set to idle
+			m_locked = false;
+			m_Damage = false;
+			//Resets the attack animation
+			m_animController->GetAnimation(m_animController->GetActiveAnim()).Reset();
+
+			activeAnimation = IDLE;
 		}
 	}
 	else

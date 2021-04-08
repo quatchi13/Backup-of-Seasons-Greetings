@@ -729,7 +729,7 @@ void PhysicsPlayground::makeImage(std::string filename, int width, int height, f
 	}else if (filename == "Start.png") {
 		screen = entity;
 	}
-	else if (filename == "aSprites/T/F/SnowTileBackground.png") {
+	else if (filename == "ground.png") {
 		groundTile = entity;
 	}
 	
