@@ -95,7 +95,7 @@ void PhysicsPlayground::InitScene(float windowWidth, float windowHeight)
 		ECS::AttachComponent<AnimationController>(entity);
 
 		//Sets up the components
-		std::string fileName = "spritesheets/Frost-Sheet.png";
+		std::string fileName = "spritesheets/Frost-Sheet-1.png";
 		std::string animations = "Frost.json";
 		ECS::GetComponent<Player>(entity).InitPlayer(fileName, animations, 19.5, 19.5, &ECS::GetComponent<Sprite>(entity),
 			&ECS::GetComponent<AnimationController>(entity), &ECS::GetComponent<Transform>(entity));
